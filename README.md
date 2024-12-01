@@ -7,7 +7,7 @@ https://adventofcode.com/2024
 # Notables / Spoilers
 
 ## Day 01
-Initial.
+First Day
 
 # Setup
 

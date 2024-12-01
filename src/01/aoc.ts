@@ -1,34 +1,34 @@
-
-import { Direction, Grid2D, GridOptions, GridPoint, String2DOptions } from "../common/grids/grid";
-import { XY, IPoint2D, XYZ } from "../common/base/points";
-import { Ray3 } from "../common/base/lines";
-import { Vector3 } from "../common/base/vectors";
-import { Rectangle } from "../common/base/shapes";
-
 function parse(input: string) {
-    const toNumberArray = (s: string): number[] => {
+    const left: number[] = [];
+    const right: number[] = [];
+    const toNumberArray = (s: string): void => {
         const re: RegExp = /(-?\d+)/g;
         const matches = s.match(re);
         const numbers = matches.map(sm => parseInt(sm));
-        return numbers;
+        left.push(numbers[0]);
+        right.push(numbers[1]);
     };
 
-    const toRay = (n: number[]): Ray3 => {
-        const origin: XYZ = new XYZ(n[0], n[1], n[2]);
-        const direction: Vector3 = new Vector3(n[3], n[4], n[5]);
-        return new Ray3(origin, direction);
-    };
-
-    return input
+    input
         .split('\n')
-        .map(toNumberArray)
-        .map(toRay);
+        .forEach(toNumberArray);
+
+    return {
+        left,
+        right
+    }
 };
 
 export const part1 = async (input: string): Promise<number | string> => {
-   return 0;
+    const { left, right } = parse(input);
+    left.sort();
+    right.sort();
+    const part1 = left.reduce((total, l, i) => total + Math.abs(l - right[i]), 0);
+    return part1;
 };
 
-export const part2 = async (input: string, bounds: Rectangle): Promise<number | string> => {
-    return 0;
+export const part2 = async (input: string): Promise<number | string> => {
+    const { left, right } = parse(input);
+    const part2 = left.reduce((total, l) => total + l * right.filter(r => r === l).length, 0);
+    return part2;
 };
