@@ -1,0 +1,53 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Unit Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  id-token: write
+  contents: read
+  checks: write
+  actions: read
+
+jobs:
+  build_test_report:
+    name: Build, Test & Report
+
+    runs-on: ubuntu-latest
+    env:
+      node-version: 20.x
+
+    # strategy:
+    #   matrix:
+    #     node-version: [20.x]
+    #     # See supported Node.js release schedule at https://nodejs.org/en/about/previous-releases
+    #     # https://nodejs.org/api/esm.html#modules-ecmascript-modules
+
+    steps:
+    - name: Checkout Latest
+      uses: actions/checkout@v4
+    - name: Use Node.js ${{env.node-version}}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{env.node-version}}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm run bundle
+    #- run: npm run prettier
+    #- run: npm run linter
+    - run: npm test
+
+    ### https://github.com/dorny/test-reporter/tree/main
+    - uses: dorny/test-reporter@v1
+      with:
+        #artifact: test-results   # artifact name
+        name: Test Results        # Name of the check run which will be created
+        path: reports/jest-*.xml  # Path to test results
+        reporter: jest-junit      # Format of test results
