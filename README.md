@@ -9,6 +9,9 @@ https://adventofcode.com/2024
 ## Day 01
 First Day
 
+## Day 03
+RegEx, where we learn about how to truly remove line endings and "lazy" matching
+
 # Setup
 
 ## Building
