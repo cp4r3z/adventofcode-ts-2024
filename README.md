@@ -12,6 +12,9 @@ First Day
 ## Day 03
 RegEx, where we learn about how to truly remove line endings and "lazy" matching
 
+## Day 04
+Grid word search. Interesting use of Array's every() method
+
 # Setup
 
 ## Building

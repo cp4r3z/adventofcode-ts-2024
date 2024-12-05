@@ -24,6 +24,8 @@ export type PrintOptions = {
 }
 
 export module Direction {
+    // https://en.wikipedia.org/wiki/Cardinal_direction
+
     export enum Cardinal {
         North = 1 << 0, // 1
         South = 1 << 1, // 2
@@ -42,12 +44,23 @@ export module Direction {
         Cardinal.West
     ];
 
+    export const Ordinals: Cardinal[] = [
+        Cardinal.NorthWest,
+        Cardinal.NorthEast,
+        Cardinal.SouthWest,
+        Cardinal.SouthEast
+    ];
+
     export const CardinalToXY: Map<Cardinal, Points.XY> = new Map<Cardinal, Points.XY>();
     // Y Down
     CardinalToXY.set(Cardinal.North, new Points.XY(0, -1));
     CardinalToXY.set(Cardinal.South, new Points.XY(0, 1));
     CardinalToXY.set(Cardinal.West, new Points.XY(-1, 0));
-    CardinalToXY.set(Cardinal.East, new Points.XY(1, 0));
+    CardinalToXY.set(Cardinal.East, new Points.XY(1, 0));    
+    CardinalToXY.set(Cardinal.NorthWest, new Points.XY(-1, -1));
+    CardinalToXY.set(Cardinal.NorthEast, new Points.XY(1, -1));
+    CardinalToXY.set(Cardinal.SouthWest, new Points.XY(-1, 1));
+    CardinalToXY.set(Cardinal.SouthEast, new Points.XY(1, 1));
 
     export const XYToCardinal = (unit: Points.XY): Cardinal => {
         for (const c of Cardinals) {
