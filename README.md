@@ -18,6 +18,9 @@ Grid word search. Interesting use of Array's every() method
 ## Day 05
 Custom sort. Again used that every() method.
 
+## Day 06
+*Grid* problem. Part 2 involves running the simulation many times, and is a good candidate for worker threads.
+
 # Setup
 
 ## Building
