@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="4" failures="0" errors="0" time="8.094">
+  <testsuite name="out\06\aoc.test.js" errors="0" failures="0" skipped="3" timestamp="2024-12-07T01:27:42" time="7.853" tests="4">
+    <testcase classname="Day 06" name="Part 1" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="Day 06" name="Part 1 (Real Input)" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="Day 06" name="Part 2" time="7.355">
+    </testcase>
+    <testcase classname="Day 06" name="Part 2 (Real Input)" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+</testsuites>
