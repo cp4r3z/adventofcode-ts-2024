@@ -103,3 +103,22 @@ export class DFS {
         this.stack.length = startingStackLength; // This is an interesting way to do it
     }
 }
+
+/**
+ * @class Breadth First Search Pathfinding Algorithm
+ * @remarks IGraph Implementation Agnostic
+ */
+export class BFS {
+
+    findPath(start: INode, end: INode):PathfinderResult{
+
+        const path = [];
+        const cost = Infinity;
+
+        // we need a 
+
+        return { path, cost };
+
+    }
+
+}

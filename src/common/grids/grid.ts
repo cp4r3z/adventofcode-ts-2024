@@ -56,7 +56,7 @@ export module Direction {
     CardinalToXY.set(Cardinal.North, new Points.XY(0, -1));
     CardinalToXY.set(Cardinal.South, new Points.XY(0, 1));
     CardinalToXY.set(Cardinal.West, new Points.XY(-1, 0));
-    CardinalToXY.set(Cardinal.East, new Points.XY(1, 0));    
+    CardinalToXY.set(Cardinal.East, new Points.XY(1, 0));
     CardinalToXY.set(Cardinal.NorthWest, new Points.XY(-1, -1));
     CardinalToXY.set(Cardinal.NorthEast, new Points.XY(1, -1));
     CardinalToXY.set(Cardinal.SouthWest, new Points.XY(-1, 1));
@@ -154,12 +154,12 @@ export class Grid2D extends Map<string, any> implements IGraph {
         defaultValue: ' ' // or null?
     }
 
-    protected _neighborCache: Map<Points.IPoint2D, Points.IPoint2D[]>;
+    protected _neighborCache: Map<GridPoint, GridPoint[]>;
 
     constructor(options?: GridOptions) {
         super();
         if (options) this.options = options;
-        this._neighborCache = new Map<Points.IPoint2D, Points.IPoint2D[]>();
+        this._neighborCache = new Map();
     }
 
     clear() {
@@ -169,10 +169,10 @@ export class Grid2D extends Map<string, any> implements IGraph {
 
     // TODO: delete, has
 
-    getPoint = (point: Points.IPoint2D): any => {
+    getPoint = (point: Points.IPoint2D): GridPoint | null => {
         const hash: string = Grid2D.HashPointToKey(point);
 
-        let value: any = this.get(hash);
+        let value: GridPoint = this.get(hash);
 
         if (typeof (value) === 'undefined') {
             value = null;
@@ -258,7 +258,7 @@ export class Grid2D extends Map<string, any> implements IGraph {
         return value;
     };
 
-    getValueArray() {
+    getValueArray(): GridPoint[] {
         const mapArr = [...this]; // array of arrays
         const valArr = mapArr.map(([key, value]) => value);
         return valArr;
@@ -338,7 +338,7 @@ export class Grid2D extends Map<string, any> implements IGraph {
     }
 
     // #region IGraph Implementation
-    getNeighbors(point: Points.IPoint2D): Points.IPoint2D[] {
+    getNeighbors(point: GridPoint): GridPoint[] {
         let neighbors = this._neighborCache.get(point);
         if (Array.isArray(neighbors)) {
             return neighbors;
