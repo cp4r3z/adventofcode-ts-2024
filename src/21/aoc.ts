@@ -133,7 +133,7 @@ class Keypad extends Grid2D {
                 }
                 if (consecutiveCandidate > consecutiveBase) return true;
                 if (consecutiveCandidate === consecutiveBase && !!directional) {
-                    console.log('MORE PROCESSING! Simulate clicks');
+                    //console.log('MORE PROCESSING! Simulate clicks');
                     let baseAsDirections = base.map(c => directionCardinalMap.get(c)).join('') + 'A';
                     //baseAsDirections += 'A';
                     const baseDirectionalPresses = directional.getPresses(baseAsDirections);
