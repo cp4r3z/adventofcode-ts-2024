@@ -198,18 +198,14 @@ export class Grid2D extends Map<string, any> implements IGraph {
         return value;
     };
 
-    setGridPoint = (point: GridPoint): void => this.setPoint(point, point);
-
-    setPoint = (point: Points.IPoint2D, value: any): void => {
+    expandBounds = (point: Points.IPoint2D): void => {
         if (!this.bounds) {
             // Should only happen once
             this.bounds = new Shapes.Rectangle(point, point);
         }
-
-        const hash: string = Grid2D.HashPointToKey(point);
-
         // Keep record of the overall dimensions
         // I wonder if this should be a special kind of shape!
+        // Perhaps we can extend Rectangle to have an Expand method?
         if (point.x < this.bounds.minX) {
             this.bounds = new Shapes.Rectangle(new Points.XY(point.x, this.bounds.x0y0.y), this.bounds.x1y1);
         }
@@ -222,6 +218,14 @@ export class Grid2D extends Map<string, any> implements IGraph {
         else if (point.y > this.bounds.maxY) {
             this.bounds = new Shapes.Rectangle(this.bounds.x0y0, new Points.XY(this.bounds.x1y1.x, point.y));
         }
+    };
+
+    setGridPoint = (point: GridPoint): void => this.setPoint(point, point);
+
+    setPoint = (point: Points.IPoint2D, value: any): void => {
+        const hash: string = Grid2D.HashPointToKey(point);
+
+        this.expandBounds(point);
 
         this.set(hash, value);
     };
@@ -241,7 +245,11 @@ export class Grid2D extends Map<string, any> implements IGraph {
                     if (options?.parseInt) {
                         val = parseInt(s);
                     }
-                    this.setGridPoint(new GridPoint(x, y, val));
+                    if (val !== this.options?.defaultValue) {
+                        this.setGridPoint(new GridPoint(x, y, val));
+                    } else {
+                        this.expandBounds(new Points.XY(x, y));
+                    }
                 });
             });
     };

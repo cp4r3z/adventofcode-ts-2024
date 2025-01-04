@@ -19,10 +19,13 @@ Grid word search. Interesting use of Array's every() method
 Custom sort. Again used that every() method.
 
 ## Day 06
-*Grid* problem. Part 2 involves running the simulation many times, and is a good candidate for worker threads.
+**Grid** problem. Part 2 involves running the simulation many times, and is a good candidate for worker threads.
 
 ## Day 07
-Permutations and function pointers. The solution runs very slow (50s). A lot of Copilot was used here with impressive results.
+**Permutations** and function pointers. The solution runs very slow (50s). A lot of Copilot was used here with impressive results.
+
+## Day 08
+**Grid**
 
 # Setup
 
