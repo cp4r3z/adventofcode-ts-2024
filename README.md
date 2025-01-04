@@ -30,6 +30,9 @@ Custom sort. Again used that every() method.
 ## Day 10
 **Grid** and **DFS**
 
+## Day 11
+**Linked List** to model the actual behavior but unacceptable for Part 2. Remodeled as a **Map** after some internet help.
+
 # Setup
 
 ## Building
