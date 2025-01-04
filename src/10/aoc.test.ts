@@ -8,10 +8,10 @@ const tinput = await Input.tinput(__dirname);
 const tinput2 = await Input.tinput2(__dirname);
 const input = await Input.input(__dirname);
 
-describe(`Day 21`, () => {
+describe(`Day 10`, () => {
     it('Part 1', async () => {
         const solution = await part1(tinput);
-        expect(solution).toBe(126384);
+        expect(solution).toBe(36);
     });
 
     xit('Part 1 (Real Input)', async () => {
@@ -20,9 +20,9 @@ describe(`Day 21`, () => {
         console.log(solution);
     });
 
-    xit('Part 2', async () => {
+    it('Part 2', async () => {
         const solution = await part2(tinput);
-        expect(solution).toBe(0);
+        expect(solution).toBe(81);
     });
 
     xit('Part 2 (Real Input)', async () => {

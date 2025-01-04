@@ -27,6 +27,9 @@ Custom sort. Again used that every() method.
 ## Day 08
 **Grid**
 
+## Day 10
+**Grid** and **DFS**
+
 # Setup
 
 ## Building

@@ -134,7 +134,7 @@ export class GridPoint extends Points.XY implements INode {
         this.Value = value;
     }
     print() { return this.Value; }
-
+    override toString = () => `x:${this.x}, y:${this.y} = ${this.Value}`;
 }
 
 // Warning: Do not use the native Map set() function
