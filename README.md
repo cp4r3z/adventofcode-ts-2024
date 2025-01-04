@@ -21,6 +21,9 @@ Custom sort. Again used that every() method.
 ## Day 06
 *Grid* problem. Part 2 involves running the simulation many times, and is a good candidate for worker threads.
 
+## Day 07
+Permutations and function pointers. The solution runs very slow (50s). A lot of Copilot was used here with impressive results.
+
 # Setup
 
 ## Building
