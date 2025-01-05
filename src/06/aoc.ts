@@ -66,7 +66,7 @@ class Guard extends GridPoint {
         return this.move(delta);
     }
     clone() {
-        return new Guard(this.x, this.y, this.Value, this._map);;
+        return new Guard(this.x, this.y, this.Value, this._map);
     }
 
     patrol(): PatrolResult {

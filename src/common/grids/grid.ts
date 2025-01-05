@@ -37,12 +37,28 @@ export module Direction {
         SouthEast = 1 << 7
     };
 
+    // These are in this order for a reason! Turning right will increment by 1. Look at Y2024D06
     export const Cardinals: Cardinal[] = [
         Cardinal.North,
         Cardinal.East,
         Cardinal.South,
         Cardinal.West
     ];
+
+    export const toCardinalName = (card: Cardinal): string => {
+        switch (card) {
+            case Cardinal.North:
+                return 'North';
+            case Cardinal.South:
+                return 'South';
+            case Cardinal.West:
+                return 'West';
+            case Cardinal.East:
+                return 'East';
+            default:
+                return 'UNKNOWN';
+        }
+    }
 
     export const Ordinals: Cardinal[] = [
         Cardinal.NorthWest,
@@ -129,12 +145,20 @@ export module Direction {
 
 export class GridPoint extends Points.XY implements INode {
     public Value: any;
+    public Orientation: Direction.Cardinal = null;
+
     constructor(x: number, y: number, value: any) {
         super(x, y);
         this.Value = value;
     }
     print() { return this.Value; }
     override toString = () => `x:${this.x}, y:${this.y} = ${this.Value}`;
+
+    clone(): GridPoint {
+        const cloned = new GridPoint(this.x, this.y, this.Value);
+        cloned.Orientation = this.Orientation;
+        return cloned;
+    }
 }
 
 // Warning: Do not use the native Map set() function
@@ -345,6 +369,28 @@ export class Grid2D extends Map<string, any> implements IGraph {
         return digest;
     }
 
+    addBorder = (value?: any) => {
+        const bounds = new Shapes.Rectangle(
+            new Points.XY(this.bounds.minX - 1, this.bounds.minY - 1),
+            new Points.XY(this.bounds.maxX + 1, this.bounds.maxY + 1));
+
+        if (value === undefined) {
+            //this.setBounds(bounds);
+            value = this.options.defaultValue;
+        }
+
+        // Top & Bottom
+        for (let x = bounds.minX; x <= bounds.maxX; x++) {
+            this.setGridPoint(new GridPoint(x, bounds.minY, value));
+            this.setGridPoint(new GridPoint(x, bounds.maxY, value));
+        }
+        // Sides
+        for (let y = bounds.minY + 1; y <= bounds.maxY - 1; y++) {
+            this.setGridPoint(new GridPoint(bounds.minX, y, value));
+            this.setGridPoint(new GridPoint(bounds.maxX, y, value));
+        }
+    }
+
     // #region IGraph Implementation
     getNeighbors(point: GridPoint): GridPoint[] {
         let neighbors = this._neighborCache.get(point);
@@ -359,6 +405,7 @@ export class Grid2D extends Map<string, any> implements IGraph {
             const p = this.getPoint(neighbor); // Warning! Is setOnGet true?
             if (!p) continue;
             if (!this.bounds.hasPoint(p)) continue;
+           // p.Orientation = c; // ah, no this will set the orientation for the same point multiple times.
             neighbors.push(p);
         }
 
@@ -394,6 +441,9 @@ export class Grid2D extends Map<string, any> implements IGraph {
                 }
                 if (value?.print) {
                     value = value.print();
+                    if (value === undefined) {
+                        value = this.options.defaultValue;
+                    }
                 }
                 if (pathHash.includes(key)) {
                     value = 'O'; // Or some other path character
