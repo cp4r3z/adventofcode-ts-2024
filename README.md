@@ -33,6 +33,9 @@ Custom sort. Again used that every() method.
 ## Day 11
 **Linked List** to model the actual behavior but unacceptable for Part 2. Remodeled as a **Map** after some internet help.
 
+## Day 13
+Solve intersection of two lines in point slope form. Part 2 introduces some serious **floating point error** that needs to be dealt with.
+
 # Setup
 
 ## Building

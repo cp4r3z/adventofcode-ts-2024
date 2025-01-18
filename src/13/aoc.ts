@@ -8,66 +8,50 @@ type Buttons = {
 class Machine {
     constructor(public aButton: XY, public bButton: XY, public prize: XY) { }
 
+    convertUnits() {
+        this.prize.move(new XY(1e13, 1e13));
+        return this;
+    }
+
+    round(float: number): number | null {
+        //const MAGIC_NUMBER = Math.sqrt( Number.EPSILON);
+        const MAGIC_NUMBER = 1e-3; // ew
+
+        const rounded = Math.round(float);
+        const diff = Math.abs(rounded - float);
+        if (diff < MAGIC_NUMBER) {
+            return rounded;
+        }
+        return null;
+    }
+
     minTokens(): Buttons {
-        // ok , let's start with the cheap one (b)
-        let bPressesToBeyondX = Math.ceil(this.prize.x / this.bButton.x);
-        let bPressesToBeyondY = Math.ceil(this.prize.y / this.bButton.y);
-        let bPresses = Math.max(bPressesToBeyondX, bPressesToBeyondY);
-        let aPresses = 0;
 
-        let point = new XY(this.bButton.x * bPresses, this.bButton.y * bPresses);
-        const aN = new XY(-this.aButton.x, -this.aButton.y);
-        const bN = new XY(-this.bButton.x, -this.bButton.y);
+        const mA = this.aButton.y / this.aButton.x;
+        const mB = this.bButton.y / this.bButton.x;
 
-        const isFar = (): boolean => {
-            // Note: This could return true if we're at the prize
-            return point.x >= this.prize.x && point.y >= this.prize.y;
-        }
+        // Find the intersection of two lines.
+        // (y-y1) = m*(x-x1)
+        // This is after some substitution:
+        const X = (this.prize.y - (this.prize.x * mB)) / (mA - mB);
+        const Y = X * mA;
 
-        if (!isFar()){
-             // Should not happen
+        const aPresses = X / this.aButton.x;
+        const XtoP = this.prize.x - X;
+        const bPresses = XtoP / this.bButton.x;
+
+        // Find the number of presses. This should be an integer.
+        // The trouble is that there is some floating point error that gets very magnified.
+        const aPressesRounded = this.round(aPresses);
+        const bPressesRounded = this.round(bPresses);
+
+        if (!aPressesRounded || !bPressesRounded) {
             return null;
         }
-
-        while (bPresses >= 0) {
-            if (point.equals(this.prize)) {
-                break; // Note: I'm not sure how we get here logically, but we do.
-            }
-
-            while (isFar()) {
-                // Decrement B Presses while we're "far"
-                point.move(bN);
-                bPresses--;
-                if (point.equals(this.prize)){
-                    break;
-                }
-            }
-
-            while (!isFar()) {
-                // Increment A Presses until we're "far" again
-                point.move(this.aButton);
-                aPresses++;
-                if (point.equals(this.prize)){
-                    break;
-                }
-            }
-
-        }
-
-        if (bPresses <= 0) {
-            return null;
-        }
-
-        if (aPresses > 100 || bPresses > 100) {
-            // Should not happen
-            return null;
-        }
-
         return {
-            A: aPresses,
-            B: bPresses
-        }
-
+            A: aPressesRounded,
+            B: bPressesRounded
+        };
     }
 }
 
@@ -103,9 +87,6 @@ const toCost = (presses: Buttons): number => {
 
 export const part1 = async (input: string): Promise<number | string> => {
     const parsed = parse(input);
-    const t = parsed[1].minTokens();
-    const t2 = parsed
-        .map(machine => machine.minTokens());
     const solution = parsed
         .map(machine => machine.minTokens())
         .filter(presses => !!presses)
@@ -115,6 +96,12 @@ export const part1 = async (input: string): Promise<number | string> => {
 };
 
 export const part2 = async (input: string): Promise<number | string> => {
-    const parsed = parse(input); const solution = 0;
+    const parsed = parse(input);
+    const solution = parsed
+        .map(machine => machine.convertUnits()) // Part 2
+        .map(machine => machine.minTokens())
+        .filter(presses => !!presses)
+        .map(toCost)
+        .reduce((sum, cur) => sum + cur, 0);
     return solution;
 };

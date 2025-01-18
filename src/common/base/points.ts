@@ -28,6 +28,7 @@ export class XY implements IPoint2D {
         return a.x === b.x && a.y === b.y;
     }
 
+    // a - b
     static Diff(a: IPoint2D, b: IPoint2D): XY {
         return new XY(a.x - b.x, a.y - b.y);
     }

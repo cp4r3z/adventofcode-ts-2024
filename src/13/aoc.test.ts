@@ -14,16 +14,15 @@ describe(`Day 13`, () => {
         expect(solution).toBe(480);
     });
 
-    it('Part 1 (Real Input)', async () => {
+    xit('Part 1 (Real Input)', async () => {
         const solution = await part1(input);
         console.log('Part 1 (Real Input)');
         console.log(solution);
-        // 35127 too low
     });
 
-    xit('Part 2', async () => {
+    it('Part 2', async () => {
         const solution = await part2(tinput);
-        expect(solution).toBe(0);
+        expect(solution).toBe(875318608908);
     });
 
     xit('Part 2 (Real Input)', async () => {
