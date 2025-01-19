@@ -36,6 +36,9 @@ Custom sort. Again used that every() method.
 ## Day 13
 Solve intersection of two lines in point slope form. Part 2 introduces some serious **floating point error** that needs to be dealt with.
 
+## Day 14
+This is the day where you have to find a picture of a tree in the output.
+
 # Setup
 
 ## Building
