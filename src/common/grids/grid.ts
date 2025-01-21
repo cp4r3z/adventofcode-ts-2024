@@ -414,17 +414,16 @@ export class Grid2D extends Map<string, any> implements IGraph {
         if (Array.isArray(neighbors)) {
             return neighbors;
         }
-        neighbors = [];
-
-        for (const c of Direction.Cardinals) {
+        
+        neighbors = Direction.Cardinals.map((c:Direction.Cardinal)=>{
             const xy: Points.IPoint2D = Direction.CardinalToXY.get(c);
             const neighbor: Points.IPoint2D = point.copy().move(xy);
             const p = this.getPoint(neighbor); // Warning! Is setOnGet true?
-            if (!p) continue;
-            if (!this.bounds.hasPoint(p)) continue;
+            if (!p) return null;
+            if (!this.bounds.hasPoint(p)) return null;
             // p.Orientation = c; // ah, no this will set the orientation for the same point multiple times.
-            neighbors.push(p);
-        }
+            return p;
+        });
 
         this._neighborCache.set(point, neighbors);
 
