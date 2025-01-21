@@ -1,5 +1,6 @@
 import { XY } from "../common/base/points";
-import { Direction, Grid2D, GridOptions, GridPoint, PrintOptions, String2DOptions } from "../common/grids/grid";
+import { Grid2D, GridOptions, GridPoint, PrintOptions, String2DOptions } from "../common/grids/grid";
+import { Direction } from '../common/grids/Direction';
 
 class WarehousePoint extends GridPoint {
     public type = 'Wall';

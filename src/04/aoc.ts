@@ -1,5 +1,6 @@
 import { XY } from "../common/base/points";
-import { Direction, Grid2D, GridPoint } from "../common/grids/grid";
+import { Grid2D, GridPoint } from "../common/grids/grid";
+import { Direction } from '../common/grids/Direction';
 
 const AllDirections = [...Direction.Cardinals, ...Direction.Ordinals];
 

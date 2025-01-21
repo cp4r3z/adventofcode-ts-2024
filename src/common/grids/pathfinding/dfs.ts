@@ -81,7 +81,8 @@ export class DFS {
 
             neighbors = this.graph
                 .getNeighbors(current)
-                .filter(n => !this.stack.includes(n));
+                //.filter(n => n && !this.stack.includes(n)); // Are we sure we want to be so restrictive? What if we _want_ to backtrack?
+                .filter(n => n && this.stack[this.stack.length - 2] !== n); // For now, just avoid immediate 180
             if (neighbors.length === 1) {
                 // Only one option. No need to add to call stack.
                 this.stack.push(neighbors[0]);
@@ -110,7 +111,7 @@ export class DFS {
  */
 export class BFS {
 
-    findPath(start: INode, end: INode):PathfinderResult{
+    findPath(start: INode, end: INode): PathfinderResult {
 
         const path = [];
         const cost = Infinity;

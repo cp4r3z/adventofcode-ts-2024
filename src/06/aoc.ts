@@ -1,5 +1,6 @@
 import { IPoint2D } from "../common/base/points";
-import { Direction, Grid2D, GridOptions, GridPoint } from "../common/grids/grid";
+import { Grid2D, GridOptions, GridPoint } from "../common/grids/grid";
+import { Direction } from '../common/grids/Direction';
 
 type PatrolResult = {
     visited: Set<string>,
