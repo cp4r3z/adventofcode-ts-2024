@@ -151,6 +151,12 @@ export class GridPoint extends Points.XY implements INode {
         super(x, y);
         this.Value = value;
     }
+
+    moveTo(point: Points.IPoint2D) {
+        this.x = point.x;
+        this.y = point.y;
+    }
+
     print() { return this.Value; }
     override toString = () => `x:${this.x}, y:${this.y} = ${this.Value}`;
 
@@ -253,6 +259,17 @@ export class Grid2D extends Map<string, any> implements IGraph {
 
         this.set(hash, value);
     };
+
+    moveGridPointTo(point: GridPoint, to: Points.IPoint2D) {
+        const toKey: string = Grid2D.HashPointToKey(to);
+        // Check for existing
+        if (this.has(toKey)) {
+            console.warn(`moveGridPointTo: Point Occupied!`);
+        }
+        this.deletePoint(point);
+        point.moveTo(to);
+        this.setGridPoint(point);
+    }
 
     // TODO: SetFrom2DString, but give it a type?
 
@@ -405,7 +422,7 @@ export class Grid2D extends Map<string, any> implements IGraph {
             const p = this.getPoint(neighbor); // Warning! Is setOnGet true?
             if (!p) continue;
             if (!this.bounds.hasPoint(p)) continue;
-           // p.Orientation = c; // ah, no this will set the orientation for the same point multiple times.
+            // p.Orientation = c; // ah, no this will set the orientation for the same point multiple times.
             neighbors.push(p);
         }
 
