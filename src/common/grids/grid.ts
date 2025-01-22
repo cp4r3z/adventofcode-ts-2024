@@ -16,7 +16,9 @@ export type GridOptions = {
 }
 
 export type String2DOptions = {
-    parseInt: boolean
+    parseInt?: boolean
+    startString?: string,
+    endString?: string
 }
 
 export type PrintOptions = {
@@ -168,7 +170,13 @@ export class Grid2D extends Map<string, any> implements IGraph {
                         val = parseInt(s);
                     }
                     if (val !== this.options?.defaultValue) {
-                        this.setGridPoint(new GridPoint(x, y, val));
+                        const gridPoint = new GridPoint(x, y, val)
+                        this.setGridPoint(gridPoint);
+                        if (val === options?.startString) {
+                            this.start = gridPoint;
+                        } else if (val === options?.endString) {
+                            this.end = gridPoint;
+                        }
                     } else {
                         this.expandBounds(new Points.XY(x, y));
                     }
@@ -290,13 +298,17 @@ export class Grid2D extends Map<string, any> implements IGraph {
     }
 
     // #region IGraph Implementation
+
+    public start: GridPoint = null;
+    public end: GridPoint = null;
+
     getNeighbors(point: GridPoint): GridPoint[] {
         let neighbors = this._neighborCache.get(point);
         if (Array.isArray(neighbors)) {
             return neighbors;
         }
 
-        neighbors = Direction.Cardinals.map((c:Direction.Cardinal)=>{
+        neighbors = Direction.Cardinals.map((c: Direction.Cardinal) => {
             const xy: Points.IPoint2D = Direction.CardinalToXY.get(c);
             const neighbor: Points.IPoint2D = point.copy().move(xy);
             const p = this.getPoint(neighbor); // Warning! Is setOnGet true?
@@ -375,7 +387,7 @@ export class Grid3D extends Map<string, any> {
     public Bounds: Shapes.RectangularPrismBounds = null;
 
     private readonly options: GridOptions = {
-        setOnGet: true,
+        setOnGet: false,
         defaultValue: ' ' // or null?
     }
 

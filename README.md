@@ -39,6 +39,9 @@ Solve intersection of two lines in point slope form. Part 2 introduces some seri
 ## Day 14
 This is the day where you have to find a picture of a tree in the output.
 
+## Day 16
+Interesting use of "as" keyword to downcast from `INode` to `GridPoint`
+
 # Setup
 
 ## Building
