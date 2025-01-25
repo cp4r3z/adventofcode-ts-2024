@@ -67,22 +67,34 @@ export class DFS {
     }
 
     private _dfs() {
+        let current = this.stack[this.stack.length - 1];
+
+        // Have we been here before?
+        // I think that we need to record this at the end,
+        // then if we've been here before, we add the cost so far
+        // to the known best cost going forward.
+        // orientation probably matters for grid2d...
+        const currentCost = this.pathCost(this.stack);
+        if (this._nodeCostMap.has(current)) {
+            const previousCost = this._nodeCostMap.get(current);
+            if (previousCost <= currentCost) {
+                return;
+            }
+        }
+        if (this._bestPath?.length>0){
+            const bestCost = this.pathCost(this._bestPath);
+            if (currentCost>=bestCost){
+                return;
+            }
+        }
+       
+        this._nodeCostMap.set(current, currentCost);
+
         const startingStackLength = this.stack.length;
         let branch = false;
-        let neighbors: INode[] = []
+        let neighbors: INode[] = [];
         while (!branch) {
-            let current = this.stack[this.stack.length - 1];
-
-            // Have we been here before?
-            // const currentCost = this.pathCost(this.stack);
-            // if (this._nodeCostMap.has(current)) {
-            //     const previousCost = this._nodeCostMap.get(current);
-            //     if (previousCost < currentCost) {
-            //         return;
-            //     }
-            // } else {
-            //     this._nodeCostMap.set(current, currentCost);
-            // }
+            current = this.stack[this.stack.length - 1];
 
             if (current === this._end) {
                 // Is the current stack "better" than the current "best" path?
@@ -113,18 +125,18 @@ export class DFS {
             }
         }
 
-        // TODO: sort neighbors so we evaluate the cheapest path first
+        // sort neighbors so we evaluate the cheapest path first
 
-        neighbors.sort((neighborA: INode, neighborB: INode) => {
-            this.stack.push(neighborA);
-            const costA = this.pathCost(this.stack);
-            //this._dfs();
-            this.stack.pop();
-            this.stack.push(neighborB);
-            const costB = this.pathCost(this.stack);
-            this.stack.pop();
-            return costA < costB ? -1 : 1;
-        });
+        // neighbors.sort((neighborA: INode, neighborB: INode) => {
+        //     this.stack.push(neighborA);
+        //     const costA = this.pathCost(this.stack);
+        //     //this._dfs();
+        //     this.stack.pop();
+        //     this.stack.push(neighborB);
+        //     const costB = this.pathCost(this.stack);
+        //     this.stack.pop();
+        //     return costA < costB ? -1 : 1;
+        // });
 
         neighbors.forEach((neighbor: INode) => {
             this.stack.push(neighbor);
