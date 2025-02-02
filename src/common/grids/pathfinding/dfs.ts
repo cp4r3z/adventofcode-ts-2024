@@ -12,6 +12,7 @@ export type PathfinderResult = {
 export class DFS {
 
     public stack: INode[]; // TODO: does this need to be public?    
+    public bestCost: number = Infinity;
 
     private _start: INode;
     private _end: INode;
@@ -25,15 +26,38 @@ export class DFS {
         this._end = graph.end;
     }
 
+    // setBestPath(path:INode[]){
+
+    // }
+
     /**
      * Compare two paths
      * @remarks By default, it's just shorter = better
      */
-    private _pathComparator = (current: INode[], candidate: INode[]): boolean => {
-        if (current === null) {
+    private _pathComparator = (): boolean => {
+        const candidateCost = this.pathCost(this.stack);
+
+        if (this._bestPath === null) {
+            this._bestPath = [...this.stack];
+            if (this.bestCost === Infinity) {
+                this.bestCost = candidateCost;
+            }
             return true;
         }
-        return this.pathCost(candidate) < this.pathCost(current);
+        //const currentCost = this.pathCost(current);
+        //  const candidateCost = this.pathCost(candidate) ;
+
+        const better = candidateCost < this.bestCost;
+
+        if (better) {
+            this.bestCost = candidateCost;
+            // Make a copy of the stack and return 
+            this._bestPath = [...this.stack];
+            console.log(`Better Path Found, Cost = ${this.bestCost}`);
+
+        }
+
+        return better;
     }
 
     public pathCost = (path: INode[]): number => {
@@ -41,7 +65,9 @@ export class DFS {
     }
 
     // Useful for filtering out walls, for example
-    public neighborFilter = (node: INode) => true;
+    public neighborFilter = (node: INode) => true;// !this.stack.includes(node);
+
+    public neighborSort = (nodeA: INode, nodeB: INode) => 1;
 
     // start by popping a node from the end of the stack. why pop though?
 
@@ -61,7 +87,7 @@ export class DFS {
         this._dfs();
 
         const path = this._bestPath;
-        const cost = this._bestPath ? this.pathCost(this._bestPath) : Infinity;
+        const cost = this.bestCost;
 
         return { path, cost };
     }
@@ -81,13 +107,14 @@ export class DFS {
                 return;
             }
         }
-        if (this._bestPath?.length>0){
-            const bestCost = this.pathCost(this._bestPath);
-            if (currentCost>=bestCost){
+
+        if (this._bestPath?.length > 0) {
+            //const bestCost = this.pathCost(this._bestPath);
+            if (currentCost >= this.bestCost) {
                 return;
             }
         }
-       
+
         this._nodeCostMap.set(current, currentCost);
 
         const startingStackLength = this.stack.length;
@@ -99,19 +126,14 @@ export class DFS {
             if (current === this._end) {
                 // Is the current stack "better" than the current "best" path?
                 // I'm not sure we need to do the pathcomparator anymore...
-                if (this._pathComparator(this._bestPath, this.stack)) {
-                    // Make a copy of the stack and return 
-                    this._bestPath = [...this.stack];
-                    console.log(`Better Path Found, Cost = ${this.pathCost(this._bestPath)}`);
-
-                    this.stack.length = startingStackLength; // Always do this before exiting function.
-                    return;
-                }
+                this._pathComparator();
+                this.stack.length = startingStackLength; // Always do this before exiting function.
+                return;
             }
 
             neighbors = this.graph
                 .getNeighbors(current)
-                .filter(n => n && !this.stack.includes(n)) // Prevents circular paths. Might be too restrictive?
+                // .filter(n => n && !this.stack.includes(n)) // Prevents circular paths. Might be too restrictive?
                 .filter(this.neighborFilter);
             //.filter(n => n && this.stack[this.stack.length - 2] !== n);
             if (neighbors.length === 1) {
@@ -135,8 +157,10 @@ export class DFS {
         //     this.stack.push(neighborB);
         //     const costB = this.pathCost(this.stack);
         //     this.stack.pop();
-        //     return costA < costB ? -1 : 1;
+        //     return costA - costB;// ? -1 : 1;
         // });
+
+        // neighbors.sort(this.neighborSort);
 
         neighbors.forEach((neighbor: INode) => {
             this.stack.push(neighbor);

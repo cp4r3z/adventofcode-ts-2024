@@ -18,7 +18,15 @@ const pathCost = (path: GridPoint[]): number => {
     }
 
     return cost;
-}
+};
+
+let END: GridPoint = null; // bad global
+const neighborSort = (nodeA: GridPoint, nodeB: GridPoint) => {
+    const manA = XY.ManhattanDistance(nodeA, END);
+    const manB = XY.ManhattanDistance(nodeB, END);
+    return manA - manB;
+
+};
 
 export const part1 = async (input: string): Promise<number | string> => {
     const grid = new Grid2D();
@@ -27,9 +35,12 @@ export const part1 = async (input: string): Promise<number | string> => {
         endString: 'E'
     });
     //grid.print();
+    END = grid.end;
     const pathfinder = new DFS(grid);
-    pathfinder.neighborFilter = (gp: GridPoint) => gp?.Value !== '#';
+    pathfinder.neighborFilter = (gp: GridPoint) => !pathfinder.stack.includes(gp) && gp?.Value !== '#';
     pathfinder.pathCost = pathCost;
+    //pathfinder.neighborSort = neighborSort;
+    // pathfinder.bestCost = 109517; // This will be useful for Part 2.
     const { path, cost }: PathfinderResult = pathfinder.findPath();
     //grid.print({ path: path as GridPoint[] });
     const solution = cost;
