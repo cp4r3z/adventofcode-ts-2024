@@ -27,7 +27,12 @@ describe(`Day 16`, () => {
 
     xit('Part 2', async () => {
         const solution = await part2(tinput);
-        expect(solution).toBe(0);
+        expect(solution).toBe(45);
+    });
+
+    xit('Part 2 (Test Input 2', async () => {
+        const solution = await part1(tinput2);
+        expect(solution).toBe(64);
     });
 
     xit('Part 2 (Real Input)', async () => {
