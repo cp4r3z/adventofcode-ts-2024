@@ -1,7 +1,8 @@
 import { XY } from "../common/base/points";
 import { Direction } from "../common/grids/Direction";
 import { Grid2D, GridPoint } from "../common/grids/grid";
-import { DFS, PathfinderResult } from "../common/grids/pathfinding/dfs";
+import { DFS } from "../common/grids/pathfinding/dfs";
+import { PathfinderResult } from "../common/types";
 
 const pathCost = (path: GridPoint[]): number => {
     let cost = 0;

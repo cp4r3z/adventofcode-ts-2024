@@ -40,7 +40,7 @@ export class GridPoint extends Points.XY implements INode {
         this.y = point.y;
     }
 
-    print() { return this.Value; }
+    print():string { return this.Value; }
     override toString = () => `x:${this.x}, y:${this.y} = ${this.Value}`;
 
     clone(): GridPoint {
@@ -51,7 +51,7 @@ export class GridPoint extends Points.XY implements INode {
 }
 
 // Warning: Do not use the native Map set() function
-export class Grid2D extends Map<string, any> implements IGraph {
+export class Grid2D extends Map<string, GridPoint> implements IGraph {
     static HashPointToKey = (p: Points.IPoint2D): string => Grid2D.HashXYToKey(p.x, p.y);  //`X${p.x}Y${p.y}`; // maybe do some validation?
     static HashXYToKey = (x: number, y: number): string => `X${x}Y${y}`;
     static ReKey: RegExp = new RegExp(/([\-\d]+)/, 'g');
@@ -341,24 +341,26 @@ export class Grid2D extends Map<string, any> implements IGraph {
             let line = '';
             for (let x = this.bounds.minX; x <= this.bounds.maxX; x++) {
                 const key = Grid2D.HashXYToKey(x, y);
-                let value = this.get(key);
+                let s:string = this.options.defaultValue;
+
+                let value = this.get(key);                
                 if (typeof (value) === 'undefined') {
-                    value = this.options.defaultValue;
+                    //value = this.options.defaultValue;
                     if (this.options.setOnGet) {
                         this.set(key, value);
                     }
                 }
                 if (value?.print) {
-                    value = value.print();
-                    if (value === undefined) {
-                        value = this.options.defaultValue;
-                    }
+                    s = value.print();
+                    // if (value === undefined) {
+                    //     value = this.options.defaultValue;
+                    // }
                 }
                 if (pathHash.includes(key)) {
-                    value = 'O'; // Or some other path character
+                    s = 'O'; // Or some other path character
                 }
 
-                line += value;
+                line += s;
             }
             console.log(line);
         }
@@ -373,6 +375,15 @@ export class Grid2D extends Map<string, any> implements IGraph {
             }
         }
     }
+
+    // forEach(callbackfn: (value: GridPoint, key: string, map: Map<string, GridPoint>) => void, thisArg?: any): void {
+    //     super.forEach(callbackfn);
+    // }
+
+    forEach(callbackfn: (node: GridPoint, key:string, map: Map<string, GridPoint>) => void, thisArg?: any): void {
+        super.forEach(callbackfn);
+    }
+
     // #endregion
 }
 

@@ -1,9 +1,6 @@
-import { INode, IGraph } from "../../types";
+import { INode, IGraph, PathfinderResult } from "../../types";
 
-export type PathfinderResult = {
-    path: INode[],
-    cost: number
-};
+// TODO: Should each of these pathfinding algorithms have an interface?
 
 /**
  * @class Depth First Search Pathfinding Algorithm
@@ -173,6 +170,7 @@ export class DFS {
     }
 }
 
+// TODO: MOVE THIS TO bfs.ts
 /**
  * @class Breadth First Search Pathfinding Algorithm
  * @remarks IGraph Implementation Agnostic
@@ -191,3 +189,4 @@ export class BFS {
     }
 
 }
+
