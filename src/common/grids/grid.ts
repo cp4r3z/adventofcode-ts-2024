@@ -303,19 +303,30 @@ export class Grid2D extends Map<string, GridPoint> implements IGraph {
     public end: GridPoint = null;
 
     getNeighbors(point: GridPoint): GridPoint[] {
-        let neighbors = this._neighborCache.get(point);
+        let neighbors:GridPoint[] = this._neighborCache.get(point);
         if (Array.isArray(neighbors)) {
             return neighbors;
         }
 
-        neighbors = Direction.Cardinals.map((c: Direction.Cardinal) => {
+        // neighbors = Direction.Cardinals.map((c: Direction.Cardinal) => {
+        //     const xy: Points.IPoint2D = Direction.CardinalToXY.get(c);
+        //     const neighbor: Points.IPoint2D = point.copy().move(xy);
+        //     const p = this.getPoint(neighbor); // Warning! Is setOnGet true?
+        //     if (!p) return null;
+        //     if (!this.bounds.hasPoint(p)) return null;
+        //     // p.Orientation = c; // ah, no this will set the orientation for the same point multiple times.
+        //     return p;
+        // });
+
+        neighbors = [];
+        Direction.Cardinals.forEach((c: Direction.Cardinal) => {
             const xy: Points.IPoint2D = Direction.CardinalToXY.get(c);
             const neighbor: Points.IPoint2D = point.copy().move(xy);
             const p = this.getPoint(neighbor); // Warning! Is setOnGet true?
-            if (!p) return null;
-            if (!this.bounds.hasPoint(p)) return null;
+            if (!p) return;
+            if (!this.bounds.hasPoint(p)) return;
             // p.Orientation = c; // ah, no this will set the orientation for the same point multiple times.
-            return p;
+            neighbors.push(p);
         });
 
         this._neighborCache.set(point, neighbors);

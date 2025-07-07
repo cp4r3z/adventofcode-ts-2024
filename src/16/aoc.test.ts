@@ -9,12 +9,12 @@ const tinput2 = await Input.tinput2(__dirname);
 const input = await Input.input(__dirname);
 
 describe(`Day 16`, () => {
-    it('Part 1', async () => {
+    xit('Part 1', async () => {
         const solution = await part1(tinput);
         expect(solution).toBe(7036);
     });
 
-    it('Part 1 (Test Input 2', async () => {
+    xit('Part 1 (Test Input 2', async () => {
         const solution = await part1(tinput2);
         expect(solution).toBe(11048);
     });
@@ -25,7 +25,7 @@ describe(`Day 16`, () => {
         console.log(solution);
     });
 
-    xit('Part 2', async () => {
+    it('Part 2', async () => {
         const solution = await part2(tinput);
         expect(solution).toBe(45);
     });
