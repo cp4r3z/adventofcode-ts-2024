@@ -1,7 +1,16 @@
 export interface INode {
+    id?: string | undefined;
     // print function?
     equals(other: INode): boolean;
 }
+
+export interface IEdge {
+    from: INode;
+    to: INode;
+    weight?: number;
+    id?: string;
+    bidirectional?: boolean
+  }
 
 export interface IGraph {
     start: INode;
