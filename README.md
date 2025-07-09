@@ -64,6 +64,9 @@ npm test
 ```shell
 npm test 01
 ```
+
+TODO: Consider https://nodejs.org/docs/latest-v20.x/api/test.html
+
 ## Debugging
 
 In VSCode, enable "Auto Attach" and run the script with the --inspect flag.

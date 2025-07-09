@@ -9,15 +9,6 @@
 
 import { INode, IGraph, IEdge } from '../../types';
 
-// Define a simple graph structure
-// type Graph = {
-//   [node: string]: string[]; // adjacency list
-// };
-
-//export class Grid2D extends Map<string, GridPoint> implements IGraph {
-
-
-
 class Land implements INode {
     constructor(public id: string) { }
 
@@ -38,12 +29,17 @@ class Bridge implements IEdge {
     }
 }
 
+const llString = (l0: Land, l1: Land): string => `${l0.id},${l1.id}`;
+
+// TODO: This is all ... kinda silly. Konigsberg should just be a single example of a Graph
 export class Konigsberg implements IGraph {
 
     private _neighbors: Map<Land, Land[]> = new Map();
-    private _weights: Map<[Land, Land], number> = new Map();
+    private _weights: Map<string, number> = new Map();
+    private _lands: Land[];
 
     constructor(land: Land[], bridges: Bridge[]) {
+        this._lands = land;
         this.start = land[0]; // A
         this.end = land[1]; // B
 
@@ -57,9 +53,9 @@ export class Konigsberg implements IGraph {
             if (!to.includes(b.from)) {
                 to.push(b.from);
             }
-            this._weights.set([b.from, b.to], b.weight);
+            this._weights.set(llString(b.from, b.to), b.weight);
             if (b.bidirectional) {
-                this._weights.set([b.to, b.from], b.weight);
+                this._weights.set(llString(b.to, b.from), b.weight);
             }
         });
     }
@@ -72,10 +68,10 @@ export class Konigsberg implements IGraph {
         return this._neighbors.get(land) || [];
     }
     getWeight(from: Land, to: Land): number {
-        return this._weights.get([from, to]) || 0;
+        return this._weights.get(llString(from, to)) || 0;
     }
     forEach(callbackfn: (value: INode) => void, thisArg?: any): void {
-        throw new Error('Method not implemented.');
+        this._lands.forEach(callbackfn);
     }
     print() {
         throw new Error('Method not implemented.');
