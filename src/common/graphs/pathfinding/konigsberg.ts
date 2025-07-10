@@ -45,17 +45,31 @@ export class Konigsberg implements IGraph {
 
         land.forEach(l => this._neighbors.set(l, []));
         bridges.forEach(b => {
+
+            // Populate this._neighbors
             const from: Land[] = this._neighbors.get(b.from) as Land[];
             if (!from.includes(b.to)) {
                 from.push(b.to);
             }
-            const to: Land[] = this._neighbors.get(b.to) as Land[];
-            if (!to.includes(b.from)) {
-                to.push(b.from);
-            }
-            this._weights.set(llString(b.from, b.to), b.weight);
             if (b.bidirectional) {
-                this._weights.set(llString(b.to, b.from), b.weight);
+                const to: Land[] = this._neighbors.get(b.to) as Land[];
+                if (!to.includes(b.from)) {
+                    to.push(b.from);
+                }
+            }
+
+            // Populate this._weights
+            const keyToFrom = llString(b.to, b.from);
+            let weight = this._weights.get(keyToFrom) || Infinity;
+            if (b.weight < weight) {
+                this._weights.set(keyToFrom, b.weight);
+            }
+            if (b.bidirectional) {
+                const keyFromTo = llString(b.from, b.to);
+                weight = this._weights.get(keyFromTo) || Infinity;
+                if (b.weight < weight) {
+                    this._weights.set(keyFromTo, b.weight);
+                }
             }
         });
     }
@@ -108,11 +122,11 @@ export class Konigsberg implements IGraph {
 const konigsbergLands = ['A', 'B', 'C', 'D'];
 const konigsbergBridges = [
     { id: '1', lands: ['A', 'C'], weight: 1 },
-    { id: '2', lands: ['A', 'C'], weight: 1 },
-    { id: '3', lands: ['A', 'D'], weight: 1 },
-    { id: '4', lands: ['C', 'D'], weight: 1 },
-    { id: '5', lands: ['B', 'C'], weight: 1 },
-    { id: '6', lands: ['B', 'C'], weight: 1 },
+    { id: '2', lands: ['A', 'C'], weight: 10 },
+    { id: '3', lands: ['A', 'D'], weight: 5 },
+    { id: '4', lands: ['C', 'D'], weight: 3 },
+    { id: '5', lands: ['B', 'C'], weight: 4 },
+    { id: '6', lands: ['B', 'C'], weight: 10 },
     { id: '7', lands: ['B', 'D'], weight: 1 }
 ];
 
