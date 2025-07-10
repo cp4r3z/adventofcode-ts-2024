@@ -46,7 +46,7 @@ export class Dijkstra {
                 if (alt < this._dist.get(v)) {
                     this._dist.set(v, alt);
                     this._prev.set(v, [u]);
-                } else if (alt === this._dist.get(v)){
+                } else if (alt === this._dist.get(v)) {
                     const prevV = this._prev.get(v);
                     prevV.push(u);
                 }
@@ -71,15 +71,31 @@ export class Dijkstra {
         return min;
     }
 
-    findPath(start: INode, end: INode): PathfinderResult {
+    // TODO
+    // findPath(start: INode, end: INode): PathfinderResult {
+    //     return { path, cost };
+    // }
 
-        const path = [];
-        const cost = Infinity;
-
-        // we need a 
-
-        return { path, cost };
-
+    // Assumes that graph has a start and end property
+    // TODO: Consider accepting an end/target property
+    findMinPaths() {
+        const S: INode[][] = [];
+        let path: INode[] = [this.graph.end];
+        const dfsPath = (target: INode) => {
+            if (target===this.graph.start) {
+                // add the path sequence to the array
+                S.push(path.slice().reverse());            
+                return;
+            }
+            const prev = this._prev.get(target);
+            for (const p of prev) {
+                path.push(p);
+                dfsPath(p); // Recursion
+                path.pop();
+            }
+        }
+        dfsPath(this.graph.end);
+        return S;
     }
 
 }
