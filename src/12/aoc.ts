@@ -1,4 +1,5 @@
-import { Direction, Grid2D, GridPoint } from "../common/grids/grid";
+import { Grid2D, GridPoint } from "../common/grids/grid";
+import { Direction } from '../common/grids/Direction';
 
 class Region extends Set<GridPoint> {
     children: Region[] = [];

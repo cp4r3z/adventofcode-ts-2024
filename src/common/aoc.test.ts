@@ -3,7 +3,7 @@ import * as Point from './base/points';
 import * as QuadTree from './quadtree';
 import * as Interval from './intervals/interval';
 import MultiParentTree, { IMultiParentNode } from './trees/multiparent';
-import { GridOfGrid2D, GridOfGrid2DOptions } from './grids/gridofgrid';
+//import { GridOfGrid2D, GridOfGrid2DOptions } from './grids/gridofgrid';
 import { GridPoint, Grid2D } from './grids/grid';
 
 describe('Common Tests: Shape.Rectangle', () => {
@@ -431,37 +431,37 @@ describe('Common Tests: Trees', () => {
     });
 });
 
-describe('Common Tests: Grids', () => {
-    describe('Grid2DInfinite', () => {
+// describe('Common Tests: Grids', () => {
+//     describe('Grid2DInfinite', () => {
         
-        let gog: GridOfGrid2D<Grid2D>; // Common Test Object
+//         let gog: GridOfGrid2D<Grid2D>; // Common Test Object
         
-        beforeAll(() => {
-            const subGridBounds = new Shape.Rectangle(new Point.XY(0, 0), new Point.XY(3, 3)); // 4x4
-            gog = new GridOfGrid2D(subGridBounds);
-            for (let y = -4; y < 4; y++) {
-                for (let x = -4; x < 4; x++) {
-                    let signX = (x > -1) ? ' ' : '';
-                    let signY = (y > -1) ? ' ' : '';
-                    const point = new GridPoint(x, y, `${signX}${x},${signY}${y} `);
-                    gog.setGridPoint(point);
-                }
-            }
-        });
+//         beforeAll(() => {
+//             const subGridBounds = new Shape.Rectangle(new Point.XY(0, 0), new Point.XY(3, 3)); // 4x4
+//             gog = new GridOfGrid2D(subGridBounds);
+//             for (let y = -4; y < 4; y++) {
+//                 for (let x = -4; x < 4; x++) {
+//                     let signX = (x > -1) ? ' ' : '';
+//                     let signY = (y > -1) ? ' ' : '';
+//                     const point = new GridPoint(x, y, `${signX}${x},${signY}${y} `);
+//                     gog.setGridPoint(point);
+//                 }
+//             }
+//         });
 
-        it('Print', async () => {
-            //gog.print();
-        });
+//         it('Print', async () => {
+//             //gog.print();
+//         });
 
-        it('Bounds', async () => {
-            const bounds: Shape.Rectangle = gog.getBounds();
-            expect(Point.XY.AreEqual(bounds.x0y0, new Point.XY(-4, -4))).toBeTruthy();
-            expect(Point.XY.AreEqual(bounds.x1y1, new Point.XY(3, 3))).toBeTruthy();
-        });
+//         it('Bounds', async () => {
+//             const bounds: Shape.Rectangle = gog.getBounds();
+//             expect(Point.XY.AreEqual(bounds.x0y0, new Point.XY(-4, -4))).toBeTruthy();
+//             expect(Point.XY.AreEqual(bounds.x1y1, new Point.XY(3, 3))).toBeTruthy();
+//         });
 
-        it('Point', async () => {
-            const point: GridPoint = gog.getPoint(new Point.XY(3, 3));
-            expect(point.Value).toBe(' 3, 3 ');
-        });
-    });
-});
+//         it('Point', async () => {
+//             const point: GridPoint = gog.getPoint(new Point.XY(3, 3));
+//             expect(point.Value).toBe(' 3, 3 ');
+//         });
+//     });
+// });

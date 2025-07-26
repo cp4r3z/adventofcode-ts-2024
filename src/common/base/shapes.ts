@@ -1,4 +1,4 @@
-import { Direction } from "../grids/grid";
+import { Direction } from '../grids/Direction';
 import { IPoint2D, IPoint3D, XY, XYZ } from "./points";
 
 /**

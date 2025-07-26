@@ -1,5 +1,6 @@
 import { XY } from "../common/base/points";
-import { Direction, Grid2D, GridOptions, GridPoint, PrintOptions, String2DOptions } from "../common/grids/grid";
+import { Grid2D, GridOptions, GridPoint, PrintOptions, String2DOptions } from "../common/grids/grid";
+import { Direction } from '../common/grids/Direction';
 
 class WarehousePoint extends GridPoint {
     public type = 'Wall';
@@ -72,7 +73,7 @@ class Warehouse extends Grid2D {
             canMove = true;
             for (const cur of current) {
                 const neighborKey = Grid2D.HashXYToKey(cur.x + xy.x, cur.y + xy.y);
-                const neighbor: WarehousePoint = this.get(neighborKey);
+                const neighbor: WarehousePoint = this.get(neighborKey) as WarehousePoint;
                 if (!neighbor) { // ALL of the neighbors need to be empty in Part 2
                     continue;
                 }

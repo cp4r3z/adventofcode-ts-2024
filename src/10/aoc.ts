@@ -26,7 +26,7 @@ class TopographicMap extends Grid2D {
                 return;
             }
             const neighbors = this.getNeighbors(point)
-                .filter(p => p.Value === point.Value + 1)
+                .filter(p => p && p.Value === point.Value + 1)
                 .filter(p => !path.includes(p));
 
             for (const neighbor of neighbors) {

@@ -2,6 +2,7 @@ import { INode, IGraph } from '../types';
 
 import * as Points from "../base/points";
 import * as Shapes from "../base/shapes";
+import { Direction } from './Direction';
 
 const { createHash } = await import('node:crypto');
 
@@ -15,132 +16,14 @@ export type GridOptions = {
 }
 
 export type String2DOptions = {
-    parseInt: boolean
+    parseInt?: boolean
+    startString?: string,
+    endString?: string
 }
 
 export type PrintOptions = {
     yDown?: boolean,
     path?: Points.IPoint2D[]
-}
-
-export module Direction {
-    // https://en.wikipedia.org/wiki/Cardinal_direction
-
-    export enum Cardinal {
-        North = 1 << 0, // 1
-        South = 1 << 1, // 2
-        West = 1 << 2, // 4
-        East = 1 << 3, // 8
-        NorthWest = 1 << 4,
-        NorthEast = 1 << 5,
-        SouthWest = 1 << 6,
-        SouthEast = 1 << 7
-    };
-
-    // These are in this order for a reason! Turning right will increment by 1. Look at Y2024D06
-    export const Cardinals: Cardinal[] = [
-        Cardinal.North,
-        Cardinal.East,
-        Cardinal.South,
-        Cardinal.West
-    ];
-
-    export const toCardinalName = (card: Cardinal): string => {
-        switch (card) {
-            case Cardinal.North:
-                return 'North';
-            case Cardinal.South:
-                return 'South';
-            case Cardinal.West:
-                return 'West';
-            case Cardinal.East:
-                return 'East';
-            default:
-                return 'UNKNOWN';
-        }
-    }
-
-    export const Ordinals: Cardinal[] = [
-        Cardinal.NorthWest,
-        Cardinal.NorthEast,
-        Cardinal.SouthWest,
-        Cardinal.SouthEast
-    ];
-
-    export const CardinalToXY: Map<Cardinal, Points.XY> = new Map<Cardinal, Points.XY>();
-    // Y Down
-    CardinalToXY.set(Cardinal.North, new Points.XY(0, -1));
-    CardinalToXY.set(Cardinal.South, new Points.XY(0, 1));
-    CardinalToXY.set(Cardinal.West, new Points.XY(-1, 0));
-    CardinalToXY.set(Cardinal.East, new Points.XY(1, 0));
-    CardinalToXY.set(Cardinal.NorthWest, new Points.XY(-1, -1));
-    CardinalToXY.set(Cardinal.NorthEast, new Points.XY(1, -1));
-    CardinalToXY.set(Cardinal.SouthWest, new Points.XY(-1, 1));
-    CardinalToXY.set(Cardinal.SouthEast, new Points.XY(1, 1));
-
-    export const XYToCardinal = (unit: Points.XY): Cardinal => {
-        for (const c of Cardinals) {
-            if (Points.XY.AreEqual(CardinalToXY.get(c), unit)) return c;
-        }
-        throw new Error('Bad Input');
-    };
-
-    export enum Turn {
-        Left = 1 << 0, // 1
-        Right = 1 << 1, // 2
-        Ahead = 1 << 2, // 4
-        Back = 1 << 3, // 8
-    }
-
-    export const Turns: Turn[] = [
-        Turn.Left, Turn.Right, Turn.Ahead, Turn.Back
-    ];
-
-    export class CardinalClass {
-        public Left: CardinalClass;
-        public Right: CardinalClass;
-        public Back: CardinalClass;
-        public Straight: CardinalClass;
-        public XY: Points.XY;
-        constructor(public Cardinal: Cardinal) {
-            this.XY = CardinalToXY.get(this.Cardinal);
-        }
-    }
-
-    /**
-     * @returns A Map of Cardinal Direction Objects
-     */
-    export const ObjectMap = () => {
-        const North = new CardinalClass(Cardinal.North);
-        const East = new CardinalClass(Cardinal.East);
-        const South = new CardinalClass(Cardinal.South);
-        const West = new CardinalClass(Cardinal.West);
-        North.Left = West; North.Right = East; North.Back = South; North.Straight = North;
-        East.Left = North; East.Right = South; East.Back = West; East.Straight = East;
-        South.Left = East; South.Right = West; South.Back = North; South.Straight = South;
-        West.Left = South; West.Right = North; West.Back = East; West.Straight = West;
-        // return {
-        //     North,
-        //     East,
-        //     South,
-        //     West
-        // };
-        const map = new Map<Cardinal, CardinalClass>();
-        map.set(Cardinal.North, North);
-        map.set(Cardinal.East, East);
-        map.set(Cardinal.South, South);
-        map.set(Cardinal.West, West);
-        return map;
-    }
-
-    // Used in Day 17. Maybe this isn't the best
-    export const Back = (c: Cardinal): Cardinal => {
-        if (c === Cardinal.North) return Cardinal.South;
-        if (c === Cardinal.East) return Cardinal.West;
-        if (c === Cardinal.South) return Cardinal.North;
-        if (c === Cardinal.West) return Cardinal.East;
-        console.error('Bad Input');
-    }
 }
 
 export class GridPoint extends Points.XY implements INode {
@@ -157,7 +40,7 @@ export class GridPoint extends Points.XY implements INode {
         this.y = point.y;
     }
 
-    print() { return this.Value; }
+    print():string { return this.Value; }
     override toString = () => `x:${this.x}, y:${this.y} = ${this.Value}`;
 
     clone(): GridPoint {
@@ -168,7 +51,7 @@ export class GridPoint extends Points.XY implements INode {
 }
 
 // Warning: Do not use the native Map set() function
-export class Grid2D extends Map<string, any> implements IGraph {
+export class Grid2D extends Map<string, GridPoint> implements IGraph {
     static HashPointToKey = (p: Points.IPoint2D): string => Grid2D.HashXYToKey(p.x, p.y);  //`X${p.x}Y${p.y}`; // maybe do some validation?
     static HashXYToKey = (x: number, y: number): string => `X${x}Y${y}`;
     static ReKey: RegExp = new RegExp(/([\-\d]+)/, 'g');
@@ -287,7 +170,13 @@ export class Grid2D extends Map<string, any> implements IGraph {
                         val = parseInt(s);
                     }
                     if (val !== this.options?.defaultValue) {
-                        this.setGridPoint(new GridPoint(x, y, val));
+                        const gridPoint = new GridPoint(x, y, val)
+                        this.setGridPoint(gridPoint);
+                        if (val === options?.startString) {
+                            this.start = gridPoint;
+                        } else if (val === options?.endString) {
+                            this.end = gridPoint;
+                        }
                     } else {
                         this.expandBounds(new Points.XY(x, y));
                     }
@@ -409,22 +298,36 @@ export class Grid2D extends Map<string, any> implements IGraph {
     }
 
     // #region IGraph Implementation
+
+    public start: GridPoint = null;
+    public end: GridPoint = null;
+
     getNeighbors(point: GridPoint): GridPoint[] {
-        let neighbors = this._neighborCache.get(point);
+        let neighbors:GridPoint[] = this._neighborCache.get(point);
         if (Array.isArray(neighbors)) {
             return neighbors;
         }
-        neighbors = [];
 
-        for (const c of Direction.Cardinals) {
+        // neighbors = Direction.Cardinals.map((c: Direction.Cardinal) => {
+        //     const xy: Points.IPoint2D = Direction.CardinalToXY.get(c);
+        //     const neighbor: Points.IPoint2D = point.copy().move(xy);
+        //     const p = this.getPoint(neighbor); // Warning! Is setOnGet true?
+        //     if (!p) return null;
+        //     if (!this.bounds.hasPoint(p)) return null;
+        //     // p.Orientation = c; // ah, no this will set the orientation for the same point multiple times.
+        //     return p;
+        // });
+
+        neighbors = [];
+        Direction.Cardinals.forEach((c: Direction.Cardinal) => {
             const xy: Points.IPoint2D = Direction.CardinalToXY.get(c);
             const neighbor: Points.IPoint2D = point.copy().move(xy);
             const p = this.getPoint(neighbor); // Warning! Is setOnGet true?
-            if (!p) continue;
-            if (!this.bounds.hasPoint(p)) continue;
+            if (!p) return;
+            if (!this.bounds.hasPoint(p)) return;
             // p.Orientation = c; // ah, no this will set the orientation for the same point multiple times.
             neighbors.push(p);
-        }
+        });
 
         this._neighborCache.set(point, neighbors);
 
@@ -449,24 +352,26 @@ export class Grid2D extends Map<string, any> implements IGraph {
             let line = '';
             for (let x = this.bounds.minX; x <= this.bounds.maxX; x++) {
                 const key = Grid2D.HashXYToKey(x, y);
-                let value = this.get(key);
+                let s:string = this.options.defaultValue;
+
+                let value = this.get(key);                
                 if (typeof (value) === 'undefined') {
-                    value = this.options.defaultValue;
+                    //value = this.options.defaultValue;
                     if (this.options.setOnGet) {
                         this.set(key, value);
                     }
                 }
                 if (value?.print) {
-                    value = value.print();
-                    if (value === undefined) {
-                        value = this.options.defaultValue;
-                    }
+                    s = value.print();
+                    // if (value === undefined) {
+                    //     value = this.options.defaultValue;
+                    // }
                 }
                 if (pathHash.includes(key)) {
-                    value = 'O'; // Or some other path character
+                    s = 'O'; // Or some other path character
                 }
 
-                line += value;
+                line += s;
             }
             console.log(line);
         }
@@ -481,6 +386,19 @@ export class Grid2D extends Map<string, any> implements IGraph {
             }
         }
     }
+
+    // forEach(callbackfn: (value: GridPoint, key: string, map: Map<string, GridPoint>) => void, thisArg?: any): void {
+    //     super.forEach(callbackfn);
+    // }
+
+    forEach(callbackfn: (node: GridPoint, key:string, map: Map<string, GridPoint>) => void, thisArg?: any): void {
+        super.forEach(callbackfn);
+    }
+
+    isEnd(point:GridPoint): boolean {
+        return point === this.end;
+    }
+
     // #endregion
 }
 
@@ -495,7 +413,7 @@ export class Grid3D extends Map<string, any> {
     public Bounds: Shapes.RectangularPrismBounds = null;
 
     private readonly options: GridOptions = {
-        setOnGet: true,
+        setOnGet: false,
         defaultValue: ' ' // or null?
     }
 

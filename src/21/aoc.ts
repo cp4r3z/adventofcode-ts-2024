@@ -1,4 +1,5 @@
-import { Direction, Grid2D, GridPoint } from "../common/grids/grid";
+import { Grid2D, GridPoint } from "../common/grids/grid";
+import { Direction } from '../common/grids/Direction';
 import { IPoint2D, XY } from "../common/base/points";
 
 // #region GLOBALS
