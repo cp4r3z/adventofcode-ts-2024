@@ -39,6 +39,10 @@ Solve intersection of two lines in point slope form. Part 2 introduces some seri
 ## Day 14
 This is the day where you have to find a picture of a tree in the output.
 
+## Day 16
+This is the day where I needed a break. Essentially a **pathfinding** puzzle I realized that I never had a proper Dijkstra's algorithm with weighted nodes. Also, with the new "Oriented" Grid, we treat each "orientation" in a grid tile as a separate node in the graph.
+My solution is still a bit slow for the input, taking perhaps 10s.
+
 # Setup
 
 ## Building
@@ -61,6 +65,9 @@ npm test
 ```shell
 npm test 01
 ```
+
+TODO: Consider https://nodejs.org/docs/latest-v20.x/api/test.html
+
 ## Debugging
 
 In VSCode, enable "Auto Attach" and run the script with the --inspect flag.
